@@ -442,6 +442,7 @@ HdMap.prototype = {
             this.popup.feature = feature;
             this.map.addPopup(this.popup, true);
         }
+
         function unSelect(evt) {
             feature = evt.feature;
             if (feature.popup) {
@@ -451,6 +452,7 @@ HdMap.prototype = {
                 feature.popup = null;
             }
         }
+
         function onPopupClose(evt) {
             // 'this' is the popup.
             var feature = this.feature;
@@ -478,13 +480,47 @@ HdMap.prototype = {
     /**
      * 标面
      * */
-    addPolygon: function (polygonFeature, styleMap) {
-        var polygonLayer = new OpenLayers.Layer.Vector("面");
-        if(styleMap){
+    addPolygon: function (polygonData, styleMap) {
+        var polygonLayer = this.map.getLayersByName("面")[0];
+        if (!polygonLayer) {
+            polygonLayer = new OpenLayers.Layer.Vector("面");
+            this.map.addLayer(polygonLayer);
+        }
+
+        if (styleMap) {
             polygonLayer.styleMap = styleMap;
         }
-        this.map.addLayer(polygonLayer);
-        polygonLayer.addFeatures([polygonFeature]);
+
+        if (polygonData.CLASS_NAME !== "OpenLayers.Geometry.Polygon") {
+            polygonData = polygonData[0]["geometry"];
+            if(polygonData){
+                var wkt_c = new OpenLayers.Format.WKT();
+                polygonData = wkt_c.read(polygonData);
+            }
+
+        }
+        polygonLayer.addFeatures([polygonData]);
+        return this.map;
+    },
+
+    addMultiPolygon: function (multiPolygonData, styleMap) {
+        var polygonLayer = this.map.getLayersByName("多面")[0];
+        if (!polygonLayer) {
+            polygonLayer = new OpenLayers.Layer.Vector("多面");
+            this.map.addLayer(polygonLayer);
+        }
+        if (styleMap) {
+            polygonLayer.styleMap = styleMap;
+        }
+
+        if (multiPolygonData.CLASS_NAME !== "OpenLayers.Geometry.MultiPolygon") {
+            multiPolygonData = multiPolygonData[0]["geometry"];
+            if(multiPolygonData){
+                var wkt_c = new OpenLayers.Format.WKT();
+                multiPolygonData = wkt_c.read(multiPolygonData);
+            }
+        }
+        polygonLayer.addFeatures([multiPolygonData]);
         return this.map;
     },
 
@@ -524,6 +560,17 @@ HdMap.prototype = {
      * */
     removePolygon: function () {
         var PolygonLayer = this.map.getLayersByName("面")[0];
+        if (PolygonLayer != null) {
+            this.map.removeLayer(PolygonLayer);
+        }
+    },
+
+
+    /**
+     * 清除多面
+     * */
+    removeMultiPolygon: function () {
+        var PolygonLayer = this.map.getLayersByName("多面")[0];
         if (PolygonLayer != null) {
             this.map.removeLayer(PolygonLayer);
         }
