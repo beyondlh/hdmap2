@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<title>详细信息</title>
+<link rel="stylesheet" href="olapi/theme/default/style.css" type="text/css">
+<link rel="stylesheet" href="olapi/style.css" type="text/css">
+<link rel="stylesheet" href="css/style.css" type="text/css">
+<script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/jquery.contextmenu.r2.js"></script>
+<script src="olapi/lib/OpenLayers.js"></script>
+
+<script src="js/map.js"></script>
+<script >
+function init() {
+	var options = {
+			controls:[],
+			Units: "degrees",
+			tileSize: new OpenLayers.Size(256, 256),
+			singleTile: true,
+			transitionEffect: "resize",
+		    maxExtent: new OpenLayers.Bounds(113.2095407938644,24.4889420635263,118.84535346470061,30.079847860491295),
+			projection: "EPSG:4326"
+	};
+  this.map= new HdMap();
+  var url ="http://111.75.200.54:7072/arcgis/rest/services/JXGS_FOUR/MapServer/export?pt=171ee318b3306ccae050a8c07c64271f&key=NTMNDk3NNDI";
+  //var url="http://192.168.100.118:6080/arcgis/rest/services/admin/weishb/MapServer/export";
+  this.map.init("map",options,url);
+  this.map.addLoadingPanel();
+  this.map.addPanZoomBar();  //添加缩放平移控件         
+  this.map.addOverViewMap();  //添加鹰眼控件           
+  this.map.addLoadingPanel();//添加进度条控件
+  this.map.addScaline(); //添加比例尺控件
+  this.map.addOverViewMap();
+  var lines=['LINESTRING (115.76832333 24.77657667, 115.76819333 24.77665333, 115.76806167 24.776735, 115.76793333 24.77680833, 115.767785 24.77689333, 115.76764167 24.77697167, 115.76745833 24.77707167, 115.76731 24.77715, 115.76714667 24.777235, 115.76696667 24.77733, 115.76677333 24.77742167, 115.76656833 24.77752, 115.766355 24.77762167, 115.76614 24.77772, 115.76591667 24.77781833, 115.76568 24.777915, 115.76543333 24.77800667, 115.76519167 24.7781, 115.76493833 24.77819333, 115.76467 24.77828, 115.76440167 24.77837)'];
+  this.map.addPoint(115.76832333, 24.77657667);
+  this.map.removeMarker();  //清点
+  this.map.addLine(lines);  
+  this.map.removeLine();   //清线
+};
+</script>
+<style type="text/css">
+#map{
+    position: absolute;
+    left:0px;
+    right:0px;
+    top:42px;
+    bottom:20px;
+    width: 100%;
+    background-color: #FFFFFF;
+}
+</style>
+</head>
+<body onload=init();>
+  <div id="map"></div>
+</body>
+</html>
